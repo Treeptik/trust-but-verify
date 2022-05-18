@@ -8,21 +8,6 @@ services:
 variables:
   DOCKER_IMAGE_NAME: n1c0l4stournier/compliance-testing:poc
 
-docker:
-  stage: docker
-  image:
-    name: docker:20.10.5
-  variables:
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
-  script:
-    - docker build -t $DOCKER_IMAGE_NAME .
-    - docker save -o image.tar $DOCKER_IMAGE_NAME
-  artifacts:
-    paths:
-      - image.tar
-    expire_in: 30 min
-
 structure-test:
   stage: test
   image:
@@ -36,7 +21,7 @@ structure-test:
     - chmod +x container-structure-test-linux-amd64 
     - mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
   script:
-    - docker load -i image.tar
+    - docker build -t $DOCKER_IMAGE_NAME .
     - container-structure-test test --image $DOCKER_IMAGE_NAME --config structure-test.yaml -o junit --test-report report.xml
   artifacts:
     reports:
