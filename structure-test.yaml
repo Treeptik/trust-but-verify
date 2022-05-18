@@ -1,0 +1,25 @@
+schemaVersion: "2.0.0"
+
+commandTests:  
+- name: "Check java version"
+  command: "sh"
+  args: ["-c", "java -version 2>&1;"]
+  expectedOutput: ["1.8"]
+- name: "Check user id"
+  command: "id"
+  expectedOutput: ["uid=1001"]
+
+fileExistenceTests:
+  - name: "Check deployment directory"
+    path: "/deployments"
+    shouldExist: true
+    permissions: 'drwxrwxr-x'
+    uid: 1001
+  - name: "Check run-java"
+    path: "/deployments/run-java.sh"
+    shouldExist: true
+    permissions: '-r-xr-----'
+    uid: 1001
+  - name: "Check java.security"
+    path: "/etc/alternatives/jre/lib/security/java.security"
+    shouldExist: true
